@@ -74,3 +74,49 @@ Then, instead of exiting after the first result, the program will ask the user f
 
 >Thanks to [XPeppers organization](https://github.com/xpeppers/string-calculator-kata) and our friend [XPepper](https://github.com/xpepper) to have created this shiny README file.<br/>
 >Credits also to [Roy Osherove](http://osherove.com/tdd-kata-1) for the original idea.
+
+---
+
+# Typescript solution
+
+Requirements:
+
+- `node 16.18` or later
+
+> or just `docker` in alternative, see "Docker way" at the end
+
+### Build it
+
+```
+$ yarn install
+$ yarn tsc
+```
+
+> remember to enable yarn if needed: `corepack enable`
+
+
+### Run tests
+
+To run tests:
+
+```
+$ yarn test
+```
+
+## Docker way
+
+If you do not have node installed in you machine, everything can be executed in a temporary container.
+
+Start the temporary container on bash with:
+
+```
+$ docker run --rm -it -p 8000:8000 -v $PWD:/app -w /app node:16.18 bash
+root@620af4e91dbf:/app#
+```
+
+Here you can execute setup commands normally as described above:
+
+```
+# yarn install
+# yarn ...
+```
