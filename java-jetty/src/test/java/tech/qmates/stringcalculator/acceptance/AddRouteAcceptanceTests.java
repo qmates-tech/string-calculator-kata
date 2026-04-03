@@ -20,23 +20,12 @@ class AddRouteAcceptanceTests {
 
     @BeforeAll
     static void startServer() throws Exception {
-        serverThread = new Thread(() -> {
-            try {
-                Application.main(new String[]{});
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-        serverThread.setDaemon(true);
-        serverThread.start();
-        Thread.sleep(2000);
+        serverThread = asyncStartJettyServerThread();
     }
 
     @AfterAll
     static void stopServer() {
-        if (serverThread != null) {
-            serverThread.interrupt();
-        }
+        serverThread.interrupt();
     }
 
     @Test
@@ -816,6 +805,22 @@ class AddRouteAcceptanceTests {
         var response = httpClient.send(request, BodyHandlers.ofString());
 
         assertEquals(405, response.statusCode());
+    }
+
+    private static Thread asyncStartJettyServerThread() throws InterruptedException {
+        var jettyServerThread = new Thread(() -> {
+            try {
+                Application.main(new String[]{});
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        jettyServerThread.setDaemon(true);
+        jettyServerThread.start();
+        Thread.sleep(2000);
+        return jettyServerThread;
     }
 
 }
