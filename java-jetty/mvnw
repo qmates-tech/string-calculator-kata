@@ -1,0 +1,48 @@
+#!/bin/sh
+# Maven Wrapper script
+
+set -e
+
+# Determine the script directory
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Read properties
+PROPERTIES_FILE="$SCRIPT_DIR/.mvn/wrapper/maven-wrapper.properties"
+if [ ! -f "$PROPERTIES_FILE" ]; then
+    echo "Error: $PROPERTIES_FILE not found" >&2
+    exit 1
+fi
+
+DISTRIBUTION_URL=$(grep "^distributionUrl=" "$PROPERTIES_FILE" | cut -d'=' -f2-)
+
+if [ -z "$DISTRIBUTION_URL" ]; then
+    echo "Error: distributionUrl not found in $PROPERTIES_FILE" >&2
+    exit 1
+fi
+
+# Extract version from URL
+MAVEN_VERSION=$(echo "$DISTRIBUTION_URL" | sed -n 's/.*apache-maven-\([0-9.]*\).*/\1/p')
+MAVEN_HOME="${MAVEN_USER_HOME:-$HOME/.m2}/wrapper/dists/apache-maven-$MAVEN_VERSION"
+
+# Download Maven if not present
+if [ ! -d "$MAVEN_HOME" ]; then
+    echo "Downloading Maven $MAVEN_VERSION..."
+    mkdir -p "$MAVEN_HOME"
+    TMP_ZIP=$(mktemp)
+
+    if command -v curl > /dev/null 2>&1; then
+        curl -fsSL "$DISTRIBUTION_URL" -o "$TMP_ZIP"
+    elif command -v wget > /dev/null 2>&1; then
+        wget -q "$DISTRIBUTION_URL" -O "$TMP_ZIP"
+    else
+        echo "Error: Neither curl nor wget is available" >&2
+        exit 1
+    fi
+
+    unzip -q "$TMP_ZIP" -d "$MAVEN_HOME/.."
+    rm -f "$TMP_ZIP"
+    echo "Maven $MAVEN_VERSION installed"
+fi
+
+# Run Maven
+exec "$MAVEN_HOME/bin/mvn" "$@"
