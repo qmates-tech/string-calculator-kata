@@ -22,3 +22,10 @@ Run the server:
 
 The server starts on `http://localhost:8080`.
 
+## Tests
+
+Run the tests with:
+
+```bash
+./mvnw test
+```
