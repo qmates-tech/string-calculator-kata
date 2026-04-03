@@ -12,6 +12,7 @@ public class Application {
         ServletContextHandler context = new ServletContextHandler();
         context.setContextPath("/");
         context.addServlet(new ServletHolder(new HealthServlet()), "/health");
+        context.addServlet(new ServletHolder(new AddServlet()), "/add");
 
         server.setHandler(context);
 
