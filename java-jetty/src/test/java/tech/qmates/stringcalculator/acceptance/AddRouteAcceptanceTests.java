@@ -100,7 +100,7 @@ class AddRouteAcceptanceTests {
     }
 
     @Test
-    void veryLargeIntegerReturnsItself() throws Exception {
+    void veryLargeIntegerIsIgnored() throws Exception {
         var request = HttpRequest.newBuilder()
             .uri(URI.create("http://localhost:8080/add"))
             .header("Content-Type", "text/plain")
@@ -109,7 +109,7 @@ class AddRouteAcceptanceTests {
 
         var response = httpClient.send(request, BodyHandlers.ofString());
 
-        assertEquals("123456789", response.body());
+        assertEquals("0", response.body());
         assertEquals(200, response.statusCode());
     }
 
@@ -632,7 +632,7 @@ class AddRouteAcceptanceTests {
     }
 
     @Test
-    void veryLargeRoundNumberFormatting() throws Exception {
+    void numberAboveThousandIsIgnored() throws Exception {
         var request = HttpRequest.newBuilder()
             .uri(URI.create("http://localhost:8080/add"))
             .header("Content-Type", "text/plain")
@@ -641,7 +641,7 @@ class AddRouteAcceptanceTests {
 
         var response = httpClient.send(request, BodyHandlers.ofString());
 
-        assertEquals("10000", response.body());
+        assertEquals("0", response.body());
         assertEquals(200, response.statusCode());
     }
 
@@ -660,7 +660,7 @@ class AddRouteAcceptanceTests {
     }
 
     @Test
-    void sumResultingInTenThousand() throws Exception {
+    void numbersAboveThousandBothIgnored() throws Exception {
         var request = HttpRequest.newBuilder()
             .uri(URI.create("http://localhost:8080/add"))
             .header("Content-Type", "text/plain")
@@ -669,7 +669,7 @@ class AddRouteAcceptanceTests {
 
         var response = httpClient.send(request, BodyHandlers.ofString());
 
-        assertEquals("10000", response.body());
+        assertEquals("0", response.body());
         assertEquals(200, response.statusCode());
     }
 
@@ -702,7 +702,7 @@ class AddRouteAcceptanceTests {
     }
 
     @Test
-    void hundredThousandFormatting() throws Exception {
+    void hundredThousandIsIgnored() throws Exception {
         var request = HttpRequest.newBuilder()
             .uri(URI.create("http://localhost:8080/add"))
             .header("Content-Type", "text/plain")
@@ -711,12 +711,12 @@ class AddRouteAcceptanceTests {
 
         var response = httpClient.send(request, BodyHandlers.ofString());
 
-        assertEquals("100000", response.body());
+        assertEquals("0", response.body());
         assertEquals(200, response.statusCode());
     }
 
     @Test
-    void millionFormatting() throws Exception {
+    void millionIsIgnored() throws Exception {
         var request = HttpRequest.newBuilder()
             .uri(URI.create("http://localhost:8080/add"))
             .header("Content-Type", "text/plain")
@@ -725,12 +725,12 @@ class AddRouteAcceptanceTests {
 
         var response = httpClient.send(request, BodyHandlers.ofString());
 
-        assertEquals("1000000", response.body());
+        assertEquals("0", response.body());
         assertEquals(200, response.statusCode());
     }
 
     @Test
-    void sumToMillion() throws Exception {
+    void twoMillionsAreIgnored() throws Exception {
         var request = HttpRequest.newBuilder()
             .uri(URI.create("http://localhost:8080/add"))
             .header("Content-Type", "text/plain")
@@ -739,7 +739,7 @@ class AddRouteAcceptanceTests {
 
         var response = httpClient.send(request, BodyHandlers.ofString());
 
-        assertEquals("1000000", response.body());
+        assertEquals("0", response.body());
         assertEquals(200, response.statusCode());
     }
 
@@ -1098,6 +1098,258 @@ class AddRouteAcceptanceTests {
         var response = httpClient.send(request, BodyHandlers.ofString());
 
         assertEquals("600", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void singleNegativeReturnsError() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("-1"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("negatives not allowed: -1", response.body());
+        assertEquals(400, response.statusCode());
+    }
+
+    @Test
+    void negativeWithOtherNumbersReturnsError() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("1,4,-1"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("negatives not allowed: -1", response.body());
+        assertEquals(400, response.statusCode());
+    }
+
+    @Test
+    void negativeAtBeginningReturnsError() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("-1,2,3"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("negatives not allowed: -1", response.body());
+        assertEquals(400, response.statusCode());
+    }
+
+    @Test
+    void multipleNegativesAllListedInError() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("-1,-2"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("negatives not allowed: -1, -2", response.body());
+        assertEquals(400, response.statusCode());
+    }
+
+    @Test
+    void multipleNegativesMixedWithPositivesAllListedInError() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("2,-4,-5"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("negatives not allowed: -4, -5", response.body());
+        assertEquals(400, response.statusCode());
+    }
+
+    @Test
+    void manyNegativesAllListedInError() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("1,2,-3,-4,-5"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("negatives not allowed: -3, -4, -5", response.body());
+        assertEquals(400, response.statusCode());
+    }
+
+    @Test
+    void negativeDecimalReturnsError() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("-1.5"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("negatives not allowed: -1.5", response.body());
+        assertEquals(400, response.statusCode());
+    }
+
+    @Test
+    void negativeWithNewlineSeparatorReturnsError() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("-1\n2"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("negatives not allowed: -1", response.body());
+        assertEquals(400, response.statusCode());
+    }
+
+    @Test
+    void negativeWithCustomDelimiterReturnsError() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("//;\n1;-2;3"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("negatives not allowed: -2", response.body());
+        assertEquals(400, response.statusCode());
+    }
+
+    @Test
+    void numberExactlyOneThousandIsNotIgnored() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("1000"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("1000", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void numberJustAboveThousandIsIgnored() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("1001"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("0", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void bigNumberIgnoredKeepsSmallNumber() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("2,1001"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("2", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void thousandKeptAndJustAboveIgnored() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("1000,1001"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("1000", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void bigNumberIgnoredManyNumbers() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("1,1001,2"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("3", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void multipleBigNumbersAllIgnored() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("1001,2000,9999"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("0", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void bigNumberIgnoredWithNewlineSeparator() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("1001\n2"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("2", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void bigNumberIgnoredWithCustomDelimiter() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("//;\n2;1001;3"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("5", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void specExampleTwoPlusOneThousandOneEqualsTwo() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("2,1001"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("2", response.body());
         assertEquals(200, response.statusCode());
     }
 
