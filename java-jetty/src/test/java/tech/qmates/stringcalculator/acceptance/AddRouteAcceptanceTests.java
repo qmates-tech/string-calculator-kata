@@ -807,6 +807,300 @@ class AddRouteAcceptanceTests {
         assertEquals(405, response.statusCode());
     }
 
+    @Test
+    void newlineSeparatorTwoNumbers() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("1\n2"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("3", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void newlineSeparatorThreeNumbers() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("1\n2\n3"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("6", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void newlineSeparatorFiveNumbers() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("1\n2\n3\n4\n5"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("15", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void newlineThenCommaSeparator() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("1\n2,3"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("6", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void commaThenNewlineSeparator() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("1,2\n3"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("6", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void mixedNewlineAndCommaSeparatorsManyNumbers() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("1,2\n3,4\n5"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("15", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void newlineSeparatorWithZeros() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("0\n0\n0"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("0", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void newlineSeparatorWithDecimals() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("1.5\n2.5"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("4", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void newlineSeparatorWithDecimalsThreeNumbers() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("1.1\n2.2\n3.3"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("6.6", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void mixedSeparatorsWithDecimals() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("1.5,2.5\n3.5"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("7.5", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void customDelimiterSemicolon() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("//;\n1;2"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("3", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void customDelimiterSemicolonThreeNumbers() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("//;\n1;2;3"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("6", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void customDelimiterDash() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("//-\n1-2"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("3", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void customDelimiterPipe() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("//|\n1|2|3"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("6", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void customDelimiterAsterisk() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("//*\n2*3*4"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("9", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void customDelimiterDot() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("//.\n1.2"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("3", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void customDelimiterWithSingleNumber() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("//;\n5"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("5", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void customDelimiterWithZero() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("//;\n0;0;0"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("0", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void customDelimiterManyNumbers() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("//;\n1;2;3;4;5;6;7;8;9;10"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("55", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void customDelimiterHashSymbol() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("//#\n10#20#30"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("60", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void customDelimiterWithLargeNumbers() throws Exception {
+        var request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/add"))
+            .header("Content-Type", "text/plain")
+            .POST(BodyPublishers.ofString("//;\n100;200;300"))
+            .build();
+
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        assertEquals("600", response.body());
+        assertEquals(200, response.statusCode());
+    }
+
     private static Thread asyncStartJettyServerThread() throws InterruptedException {
         var jettyServerThread = new Thread(() -> {
             try {

@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.regex.Pattern;
 
 public class AddServlet extends HttpServlet {
 
@@ -24,7 +25,17 @@ public class AddServlet extends HttpServlet {
             return "0";
         }
 
-        String[] parts = numbers.split(",");
+        String delimiter = "[,\n]";
+        String numbersPart = numbers;
+
+        if (numbers.startsWith("//")) {
+            int newlineIndex = numbers.indexOf("\n");
+            String customDelimiter = numbers.substring(2, newlineIndex);
+            delimiter = Pattern.quote(customDelimiter);
+            numbersPart = numbers.substring(newlineIndex + 1);
+        }
+
+        String[] parts = numbersPart.split(delimiter);
         BigDecimal sum = BigDecimal.ZERO;
 
         for (String part : parts) {
