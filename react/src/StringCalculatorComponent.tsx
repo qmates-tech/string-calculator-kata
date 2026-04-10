@@ -2,7 +2,12 @@ import React, { useState } from 'react'
 
 export function StringCalculatorComponent(): React.JSX.Element {
   const [input, setInput] = useState('')
-  const [result, setResult] = useState('')
+  const [result, setResult] = useState<string>('')
+
+  const onClick = () => {
+    if (input === '') setResult("0")
+    else setResult(String(input.split(',').reduce((sum, n) => sum + parseInt(n, 10), 0)))
+  }
 
   return (
     <div>
@@ -13,7 +18,7 @@ export function StringCalculatorComponent(): React.JSX.Element {
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
-        <button onClick={() => setResult(input)}>Calculate</button>
+        <button onClick={onClick}>Calculate</button>
       </div>
       <div>
         <label>Result:</label>
