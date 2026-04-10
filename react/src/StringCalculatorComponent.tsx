@@ -51,5 +51,5 @@ export function StringCalculatorComponent(): React.JSX.Element {
 }
 
 async function simulateComplexSlowOperation(): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, 100))
+  return new Promise((resolve) => setTimeout(resolve, 150))
 }
