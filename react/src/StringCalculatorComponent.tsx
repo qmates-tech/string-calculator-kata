@@ -24,12 +24,12 @@ export function StringCalculatorComponent(): React.JSX.Element {
           onChange={(e) => setInput(e.target.value)}
         />
         &nbsp;
-        <button onClick={onClick}>Calculate</button>
+        <button onClick={onClick}>Add</button>
       </div>
       <div>
         <label>Result:</label>
         &nbsp;
-        <span>{sum}</span>
+        <span data-testid="result">{sum}</span>
       </div>
     </div>
   )

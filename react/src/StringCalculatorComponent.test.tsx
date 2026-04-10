@@ -10,78 +10,78 @@ describe('StringCalculatorComponent', () => {
 
     it('with no input renders 0', async () => {
       render(<StringCalculatorComponent />);
-      await userEvent.click(screen.getByRole("button", { name: "Calculate" }));
-      await waitFor(() => expect(screen.queryByText('0')).toBeInTheDocument());
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('0'));
     })
 
     it('single digit 0 renders 0', async () => {
       render(<StringCalculatorComponent />);
       await userEvent.type(screen.getByRole("textbox"), "0");
-      await userEvent.click(screen.getByRole("button", { name: "Calculate" }));
-      await waitFor(() => expect(screen.queryByText('0')).toBeInTheDocument());
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('0'));
     })
 
     it('single digit 1 renders 1', async () => {
       render(<StringCalculatorComponent />);
       await userEvent.type(screen.getByRole("textbox"), "1");
-      await userEvent.click(screen.getByRole("button", { name: "Calculate" }));
-      await waitFor(() => expect(screen.queryByText('1')).toBeInTheDocument());
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('1'));
     })
 
     it('single digit 5 renders 5', async () => {
       render(<StringCalculatorComponent />);
       await userEvent.type(screen.getByRole("textbox"), "5");
-      await userEvent.click(screen.getByRole("button", { name: "Calculate" }));
-      await waitFor(() => expect(screen.queryByText('5')).toBeInTheDocument());
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('5'));
     })
 
     it('single number 10 renders 10', async () => {
       render(<StringCalculatorComponent />);
       await userEvent.type(screen.getByRole("textbox"), "10");
-      await userEvent.click(screen.getByRole("button", { name: "Calculate" }));
-      await waitFor(() => expect(screen.queryByText('10')).toBeInTheDocument());
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('10'));
     })
 
     it('single number 100 renders 100', async () => {
       render(<StringCalculatorComponent />);
       await userEvent.type(screen.getByRole("textbox"), "100");
-      await userEvent.click(screen.getByRole("button", { name: "Calculate" }));
-      await waitFor(() => expect(screen.queryByText('100')).toBeInTheDocument());
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('100'));
     })
 
     it('two numbers 1,2 renders 3', async () => {
       render(<StringCalculatorComponent />);
       await userEvent.type(screen.getByRole("textbox"), "1,2");
-      await userEvent.click(screen.getByRole("button", { name: "Calculate" }));
-      await waitFor(() => expect(screen.queryByText('3')).toBeInTheDocument());
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('3'));
     })
 
     it('two numbers 0,0 renders 0', async () => {
       render(<StringCalculatorComponent />);
       await userEvent.type(screen.getByRole("textbox"), "0,0");
-      await userEvent.click(screen.getByRole("button", { name: "Calculate" }));
-      await waitFor(() => expect(screen.queryByText('0')).toBeInTheDocument());
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('0'));
     })
 
     it('two numbers 5,5 renders 10', async () => {
       render(<StringCalculatorComponent />);
       await userEvent.type(screen.getByRole("textbox"), "5,5");
-      await userEvent.click(screen.getByRole("button", { name: "Calculate" }));
-      await waitFor(() => expect(screen.queryByText('10')).toBeInTheDocument());
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('10'));
     })
 
     it('two numbers 10,20 renders 30', async () => {
       render(<StringCalculatorComponent />);
       await userEvent.type(screen.getByRole("textbox"), "10,20");
-      await userEvent.click(screen.getByRole("button", { name: "Calculate" }));
-      await waitFor(() => expect(screen.queryByText('30')).toBeInTheDocument());
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('30'));
     })
 
     it('two numbers 100,200 renders 300', async () => {
       render(<StringCalculatorComponent />);
       await userEvent.type(screen.getByRole("textbox"), "100,200");
-      await userEvent.click(screen.getByRole("button", { name: "Calculate" }));
-      await waitFor(() => expect(screen.queryByText('300')).toBeInTheDocument());
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('300'));
     })
 
   })
@@ -91,43 +91,43 @@ describe('StringCalculatorComponent', () => {
     it('three numbers 1,2,3 renders 6', async () => {
       render(<StringCalculatorComponent />);
       await userEvent.type(screen.getByRole("textbox"), "1,2,3");
-      await userEvent.click(screen.getByRole("button", { name: "Calculate" }));
-      await waitFor(() => expect(screen.queryByText('6')).toBeInTheDocument());
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('6'));
     })
 
     it('four numbers 1,2,3,4 renders 10', async () => {
       render(<StringCalculatorComponent />);
       await userEvent.type(screen.getByRole("textbox"), "1,2,3,4");
-      await userEvent.click(screen.getByRole("button", { name: "Calculate" }));
-      await waitFor(() => expect(screen.queryByText('10')).toBeInTheDocument());
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('10'));
     })
 
     it('five numbers 1,2,3,4,5 renders 15', async () => {
       render(<StringCalculatorComponent />);
       await userEvent.type(screen.getByRole("textbox"), "1,2,3,4,5");
-      await userEvent.click(screen.getByRole("button", { name: "Calculate" }));
-      await waitFor(() => expect(screen.queryByText('15')).toBeInTheDocument());
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('15'));
     })
 
     it('six numbers 10,20,30,40,50,60 renders 210', async () => {
       render(<StringCalculatorComponent />);
       await userEvent.type(screen.getByRole("textbox"), "10,20,30,40,50,60");
-      await userEvent.click(screen.getByRole("button", { name: "Calculate" }));
-      await waitFor(() => expect(screen.queryByText('210')).toBeInTheDocument());
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('210'));
     })
 
     it('many zeros return 0', async () => {
       render(<StringCalculatorComponent />);
       await userEvent.type(screen.getByRole("textbox"), "0,0,0,0,0");
-      await userEvent.click(screen.getByRole("button", { name: "Calculate" }));
-      await waitFor(() => expect(screen.queryByText('0')).toBeInTheDocument());
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('0'));
     })
 
     it('a single number still works as a degenerate case of many numbers', async () => {
       render(<StringCalculatorComponent />);
       await userEvent.type(screen.getByRole("textbox"), "42");
-      await userEvent.click(screen.getByRole("button", { name: "Calculate" }));
-      await waitFor(() => expect(screen.queryByText('42')).toBeInTheDocument());
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('42'));
     })
 
   })
