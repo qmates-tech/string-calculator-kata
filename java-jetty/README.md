@@ -1,6 +1,6 @@
 # StringCalculator
 
-A simple API backend using embedded Jetty (no frameworks).
+Java API backend (embedded Jetty) implementation of the [String Calculator Kata](../README.md).
 
 ## Requirements
 
