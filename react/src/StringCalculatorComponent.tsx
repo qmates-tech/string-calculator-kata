@@ -2,11 +2,16 @@ import React, { useState } from 'react'
 
 export function StringCalculatorComponent(): React.JSX.Element {
   const [input, setInput] = useState('')
-  const [result, setResult] = useState<string>('')
+  const [sum, setSum] = useState<string>('')
 
-  const onClick = () => {
-    if (input === '') setResult("0")
-    else setResult(String(input.split(',').reduce((sum, n) => sum + parseInt(n, 10), 0)))
+  const calculateSum = () => {
+    if (input === '') setSum("0")
+    else setSum(String(input.split(',').reduce((sum, n) => sum + parseInt(n, 10), 0)))
+  }
+  
+  const onClick = async () => {
+    await simulateComplexSlowOperation()
+    calculateSum()
   }
 
   return (
@@ -22,8 +27,13 @@ export function StringCalculatorComponent(): React.JSX.Element {
       </div>
       <div>
         <label>Result:</label>
-        <span>{result}</span>
+        <span>{sum}</span>
       </div>
     </div>
   )
 }
+
+async function simulateComplexSlowOperation(): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, 100))
+}
+
