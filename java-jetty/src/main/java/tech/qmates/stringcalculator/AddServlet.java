@@ -19,10 +19,12 @@ public class AddServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String body = new String(req.getInputStream().readAllBytes());
-        resp.setContentType("text/plain");
         try {
+            resp.setContentType("text/plain");
             resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().print(add(body));
+            String result = add(body);
+            simulateComplexSlowOperationToDoBeforeResponse();
+            resp.getWriter().print(result);
         } catch (IllegalArgumentException e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().print(e.getMessage());
@@ -73,5 +75,13 @@ public class AddServlet extends HttpServlet {
             return value.setScale(0, RoundingMode.FLOOR).toPlainString();
         }
         return value.toPlainString();
+    }
+
+    private void simulateComplexSlowOperationToDoBeforeResponse() {
+        try {
+            Thread.sleep(150);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
