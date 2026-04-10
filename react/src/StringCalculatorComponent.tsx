@@ -1,14 +1,29 @@
 import React, { useState } from 'react'
 
+function add(numbers: string): number {
+  if (numbers === '') return 0
+
+  let delimiter: RegExp = /,|\\n/
+  let body = numbers
+
+  if (numbers.startsWith('//')) {
+    const separatorIndex = numbers.indexOf('\\n')
+    const customDelimiter = numbers.slice(2, separatorIndex)
+    delimiter = new RegExp(customDelimiter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    body = numbers.slice(separatorIndex + 2)
+  }
+
+  return body.split(delimiter).reduce((sum, n) => sum + parseInt(n, 10), 0)
+}
+
 export function StringCalculatorComponent(): React.JSX.Element {
   const [input, setInput] = useState('')
   const [sum, setSum] = useState<string>('')
 
   const calculateSum = () => {
-    if (input === '') setSum("0")
-    else setSum(String(input.split(',').reduce((sum, n) => sum + parseInt(n, 10), 0)))
+    setSum(String(add(input)))
   }
-  
+
   const onClick = async () => {
     await simulateComplexSlowOperation()
     calculateSum()
@@ -38,4 +53,3 @@ export function StringCalculatorComponent(): React.JSX.Element {
 async function simulateComplexSlowOperation(): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, 100))
 }
-
