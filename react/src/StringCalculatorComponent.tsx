@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-export function ScreenCalculatorComponent(): React.JSX.Element {
+export function StringCalculatorComponent(): React.JSX.Element {
   const [input, setInput] = useState('')
   const [result, setResult] = useState('')
 
