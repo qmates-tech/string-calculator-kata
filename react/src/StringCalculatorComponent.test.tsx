@@ -185,6 +185,140 @@ describe('StringCalculatorComponent', () => {
 
   })
 
+  describe('step 5: negative numbers', () => {
+
+    it('single negative -1 renders "negatives not allowed: -1"', async () => {
+      render(<StringCalculatorComponent />);
+      await userEvent.type(screen.getByRole("textbox"), "-1");
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent(/^negatives not allowed: -1$/));
+    })
+
+    it('1,4,-1 renders "negatives not allowed: -1"', async () => {
+      render(<StringCalculatorComponent />);
+      await userEvent.type(screen.getByRole("textbox"), "1,4,-1");
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent(/^negatives not allowed: -1$/));
+    })
+
+    it('two negatives -1,-2 renders "negatives not allowed: -1, -2"', async () => {
+      render(<StringCalculatorComponent />);
+      await userEvent.type(screen.getByRole("textbox"), "-1,-2");
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent(/^negatives not allowed: -1, -2$/));
+    })
+
+    it('three negatives -1,-2,-3 renders "negatives not allowed: -1, -2, -3"', async () => {
+      render(<StringCalculatorComponent />);
+      await userEvent.type(screen.getByRole("textbox"), "-1,-2,-3");
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent(/^negatives not allowed: -1, -2, -3$/));
+    })
+
+    it('mixed positives and negatives 1,-1,2,-3 renders all negatives in message', async () => {
+      render(<StringCalculatorComponent />);
+      await userEvent.type(screen.getByRole("textbox"), "1,-1,2,-3");
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent(/^negatives not allowed: -1, -3$/));
+    })
+
+    it('negative with newline delimiter 1\\n-1 renders "negatives not allowed: -1"', async () => {
+      render(<StringCalculatorComponent />);
+      await userEvent.type(screen.getByRole("textbox"), "1\\n-1");
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent(/^negatives not allowed: -1$/));
+    })
+
+    it('negative with custom delimiter //;\\n1;-2 renders "negatives not allowed: -2"', async () => {
+      render(<StringCalculatorComponent />);
+      await userEvent.type(screen.getByRole("textbox"), "//;\\n1;-2");
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent(/^negatives not allowed: -2$/));
+    })
+
+    it('positive numbers still render correctly after adding negative tests (regression)', async () => {
+      render(<StringCalculatorComponent />);
+      await userEvent.type(screen.getByRole("textbox"), "1,2,3");
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('6'));
+    })
+
+  })
+
+  describe('step 6: ignore numbers bigger than 1000', () => {
+
+    it('2,1001 renders 2 (1001 is ignored)', async () => {
+      render(<StringCalculatorComponent />);
+      await userEvent.type(screen.getByRole("textbox"), "2,1001");
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('2'));
+    })
+
+    it('single 1001 renders 0 (fully ignored)', async () => {
+      render(<StringCalculatorComponent />);
+      await userEvent.type(screen.getByRole("textbox"), "1001");
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('0'));
+    })
+
+    it('1000 renders 1000 (boundary: 1000 is not ignored)', async () => {
+      render(<StringCalculatorComponent />);
+      await userEvent.type(screen.getByRole("textbox"), "1000");
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('1000'));
+    })
+
+    it('1,1000 renders 1001 (1000 is not ignored)', async () => {
+      render(<StringCalculatorComponent />);
+      await userEvent.type(screen.getByRole("textbox"), "1,1000");
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('1001'));
+    })
+
+    it('1,1000,1001 renders 1001 (1001 is ignored, 1000 is not)', async () => {
+      render(<StringCalculatorComponent />);
+      await userEvent.type(screen.getByRole("textbox"), "1,1000,1001");
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('1001'));
+    })
+
+    it('all numbers above 1000 render 0', async () => {
+      render(<StringCalculatorComponent />);
+      await userEvent.type(screen.getByRole("textbox"), "1001,2000,9999");
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('0'));
+    })
+
+    it('500,600,1001 renders 1100 (1001 is ignored)', async () => {
+      render(<StringCalculatorComponent />);
+      await userEvent.type(screen.getByRole("textbox"), "500,600,1001");
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('1100'));
+    })
+
+    it('big number with newline delimiter 1\\n1001 renders 1', async () => {
+      render(<StringCalculatorComponent />);
+      await userEvent.type(screen.getByRole("textbox"), "1\\n1001");
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('1'));
+    })
+
+    it('big number with custom delimiter //;\\n1;1001 renders 1', async () => {
+      render(<StringCalculatorComponent />);
+      await userEvent.type(screen.getByRole("textbox"), "//;\\n1;1001");
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('1'));
+    })
+
+    it('normal small numbers still render correctly (regression)', async () => {
+      render(<StringCalculatorComponent />);
+      await userEvent.type(screen.getByRole("textbox"), "10,20,30");
+      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent('60'));
+    })
+
+  })
+
   describe('step 4: support different delimiters', () => {
 
     it('//;\\n1;2 renders 3', async () => {

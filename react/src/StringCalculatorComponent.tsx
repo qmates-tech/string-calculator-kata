@@ -13,7 +13,14 @@ function add(numbers: string): number {
     body = numbers.slice(separatorIndex + 2)
   }
 
-  return body.split(delimiter).reduce((sum, n) => sum + parseInt(n, 10), 0)
+  const parsed = body.split(delimiter).map(n => parseInt(n, 10))
+
+  const negatives = parsed.filter(n => n < 0)
+  if (negatives.length > 0) {
+    throw new Error(`negatives not allowed: ${negatives.join(', ')}`)
+  }
+
+  return parsed.filter(n => n <= 1000).reduce((sum, n) => sum + n, 0)
 }
 
 export function StringCalculatorComponent(): React.JSX.Element {
@@ -21,7 +28,11 @@ export function StringCalculatorComponent(): React.JSX.Element {
   const [sum, setSum] = useState<string>('')
 
   const calculateSum = () => {
-    setSum(String(add(input)))
+    try {
+      setSum(String(add(input)))
+    } catch (e) {
+      setSum((e as Error).message)
+    }
   }
 
   const onClick = async () => {
