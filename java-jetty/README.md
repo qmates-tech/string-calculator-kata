@@ -6,26 +6,25 @@ Java API backend (embedded Jetty) implementation of the [String Calculator Kata]
 
 - Java 21+
 
-## Build and Run
+## Build, run tests, and start up
 
 Compile the project:
 
-```bash
-./mvnw compile
+```
+$ ./mvnw compile
 ```
 
-Run the server:
+Run the tests with:
 
-```bash
-./mvnw compile exec:java
+```
+$ ./mvnw test
+```
+
+Start up the server:
+
+```
+$ ./mvnw compile exec:java
 ```
 
 The server starts on `http://localhost:8080`.
 
-## Tests
-
-Run the tests with:
-
-```bash
-./mvnw test
-```
