@@ -27,17 +27,13 @@ export function StringCalculatorComponent(): React.JSX.Element {
   const [input, setInput] = useState('')
   const [sum, setSum] = useState<string>('')
 
-  const calculateSum = () => {
+  const onClick = async () => {
+    await simulateComplexSlowOperation()
     try {
       setSum(String(add(input)))
     } catch (e) {
       setSum((e as Error).message)
     }
-  }
-
-  const onClick = async () => {
-    await simulateComplexSlowOperation()
-    calculateSum()
   }
 
   return (
