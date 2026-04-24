@@ -1,4 +1,4 @@
-# StringCalculator
+# String Calculator - Java Jetty API
 
 Java API backend (embedded Jetty) implementation of the [String Calculator Kata](../README.md).
 
@@ -6,7 +6,7 @@ Java API backend (embedded Jetty) implementation of the [String Calculator Kata]
 
 - Java 21+
 
-## Build, run tests, and start up
+## Build and run tests
 
 Compile the project:
 
@@ -20,11 +20,16 @@ Run the tests with:
 $ ./mvnw test
 ```
 
-Start up the server:
+## Try it
+
+Start the server with:
 
 ```
 $ ./mvnw compile exec:java
 ```
 
-The server starts on `http://localhost:8080`.
+The server starts on `http://localhost:8080`. You can try it with a simple curl:
 
+```curl
+$ curl -X POST -d $'2,8,9' http://localhost:8080/add
+```
