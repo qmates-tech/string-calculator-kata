@@ -1,4 +1,4 @@
-# String Calculator — React
+# String Calculator - React Component
 
 Typescript React implementation of the [String Calculator Kata](../README.md).
 
@@ -6,22 +6,26 @@ Typescript React implementation of the [String Calculator Kata](../README.md).
 
 - Node.js `20.10.0`
 
-## Install dependencies
+## Build and run tests
+
+Install dependencies with:
 
 ```bash
 $ npm install
 ```
 
-## Run tests
+Run the tests with:
 
 ```bash
 $ npm test
 ```
 
-## Run the demo page
+## Try it
+
+Serve the demo page with:
 
 ```bash
 $ npm run dev
 ```
 
-Then visit http://localhost:5173/
+then visit http://localhost:5173/
