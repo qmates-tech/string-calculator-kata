@@ -1,28 +1,5 @@
 import React, { useState } from 'react'
 
-function add(numbers: string): number {
-  if (numbers === '') return 0
-
-  let delimiter: RegExp = /,|\\n/
-  let body = numbers
-
-  if (numbers.startsWith('//')) {
-    const separatorIndex = numbers.indexOf('\\n')
-    const customDelimiter = numbers.slice(2, separatorIndex)
-    delimiter = new RegExp(customDelimiter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-    body = numbers.slice(separatorIndex + 2)
-  }
-
-  const parsed = body.split(delimiter).map(n => parseInt(n, 10))
-
-  const negatives = parsed.filter(n => n < 0)
-  if (negatives.length > 0) {
-    throw new Error(`negatives not allowed: ${negatives.join(', ')}`)
-  }
-
-  return parsed.filter(n => n <= 1000).reduce((sum, n) => sum + n, 0)
-}
-
 export function StringCalculatorComponent(): React.JSX.Element {
   const [input, setInput] = useState('')
   const [sum, setSum] = useState<string>('')
@@ -30,7 +7,30 @@ export function StringCalculatorComponent(): React.JSX.Element {
   const onClick = async () => {
     await simulateComplexSlowOperation()
     try {
-      setSum(String(add(input)))
+      if (input === '') {
+        setSum("0")
+        return
+      }
+
+      let delimiter: RegExp = /,|\\n/
+      let body = input
+
+      if (input.startsWith('//')) {
+        const separatorIndex = input.indexOf('\\n')
+        const customDelimiter = input.slice(2, separatorIndex)
+        delimiter = new RegExp(customDelimiter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+        body = input.slice(separatorIndex + 2)
+      }
+
+      const parsed = body.split(delimiter).map(n => parseInt(n, 10))
+
+      const negatives = parsed.filter(n => n < 0)
+      if (negatives.length > 0) {
+        throw new Error(`negatives not allowed: ${negatives.join(', ')}`)
+      }
+
+      const result = parsed.filter(n => n <= 1000).reduce((sum, n) => sum + n, 0)
+      setSum(String(result))
     } catch (e) {
       setSum((e as Error).message)
     }
